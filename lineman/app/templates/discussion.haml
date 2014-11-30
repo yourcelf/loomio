@@ -7,34 +7,39 @@
             %i.fa.fa-chevron-down
           %ul.dropdown-menu
             %li
-              %a{href: '', ng-click: 'editDiscussion()', translate: 'common.action.edit', ng-if: '::canEditDiscussion($scope.discussion)'}
-        .thread-discussion
-          %h1 {{discussion.title}}
-          .media.thread-origin
-            .media-left.thread-origin-icon
-              %img.thread-origin-group-logo{src: "{{discussion.group().logoUrlSmall}}"}
-            .media-body.thread-origin-details
-              %a{href: '/g/{{discussion.group().key}}'} {{::discussion.group().fullName()}}
-              %br
-              %span{translate: 'discussion.started_by', translate-value-name: '{{::discussion.authorName()}}'}
-              %timeago.nowrap{timestamp: '::discussion.createdAt' }>
-              ·
-              %span.nowrap.discussion-privacy__is-private{ng-show: 'discussion.private'}>
-                %i.fa.fa-lock>
-                %span{translate: 'common.privacy.private'}
-              %span.nowrap.discussion-privacy__is-public{ng-show: '!discussion.private'}>
-                %i.fa.fa-globe>
-                %span{translate: 'common.privacy.public'}
-              %span.edit-discussion-inline{ng-if: 'canEditDiscussion(discussion)'}>
+              %a{href: '', ng-click: 'editDiscussion()', translate: 'common.action.edit', ng-if: '::canEditDiscussion()'}
+        %form{name: 'discussionForm', ng_submit: 'submit()'}
+          .thread-discussion
+            %h1{ng-if: '!editing'} {{discussion.title}}
+            %input.discussion-title-input.form-control{ng-if: 'editing', ng-model: 'discussionCopy.title', placeholder: "{{ 'discussion_form.title_placeholder' | translate }}"}
+
+            .media.thread-origin
+              .media-left.thread-origin-icon
+                %img.thread-origin-group-logo{src: "{{discussion.group().logoUrlSmall}}"}
+              .media-body.thread-origin-details
+                %a{href: '/g/{{discussion.group().key}}'} {{::discussion.group().fullName()}}
+                %br
+                %span{translate: 'discussion.started_by', translate-value-name: '{{::discussion.authorName()}}'}
+                %timeago.nowrap{timestamp: '::discussion.createdAt' }>
                 ·
-                %a{translate: 'common.action.edit', href: '#', ng-click: 'editInline()'}
+                %span.nowrap.discussion-privacy__is-private{ng-show: 'discussion.private'}>
+                  %i.fa.fa-lock>
+                  %span{translate: 'common.privacy.private'}
+                %span.nowrap.discussion-privacy__is-public{ng-show: '!discussion.private'}>
+                  %i.fa.fa-globe>
+                  %span{translate: 'common.privacy.public'}
+                %span.edit-discussion-inline{ng-if: '!editing && canEditDiscussion()'}>
+                  ·
+                  %a{translate: 'common.action.edit', href: '#', ng-click: 'edit()'}
 
-          .thread-discussion-context{ng-if: '!editingInline'}
-            .thread-discussion-description{btf-markdown: 'discussion.description' }
-          .thread-discussion-edit-context{ng-if: 'editingInline'}
-            %edit_discussion_context{discussion: 'discussionCopy'}
+            .thread-discussion-context{ng-if: '!editing', btf-markdown: 'discussion.description' }
+            %textarea.discussion-context-input.form-control{ng-if: 'editing', ng-model: 'discussionCopy.description', placeholder: "{{ 'discussion_form.context_placeholder' | translate }}"}
 
-        %proposals{discussion: 'discussion'}
+            .thread-discussion-inline-actions{ng-if: 'editing'}
+              %button.btn.btn-primary{type: 'submit', translate: 'discussion_form.edit_discussion_submit' }
+              %button.btn.btn-warning{type: 'button', ng-click: 'doneEditing()', translate: 'common.action.cancel'}
+              
+            %proposals{discussion: 'discussion'}
 
         .thread-events{infinite-scroll: "getNextPage()", infinite-scroll-distance: 1, infinite-scroll-disabled: 'lastPage'}
           %h3.first Activity
@@ -42,9 +47,4 @@
 
         %comment_form{discussion: 'discussion'}
 
-
-      .thread-container{ng_controller: 'StartProposalCardController', ng-if: 'canStartProposals()'}
-        .thread-start-proposal-card
-          %h3.first Ready to make a decision?
-          %a{href: '#', ng_click: 'openForm()'}
-            Create a proposal
+      %discussion_start_proposal{discussion: 'discussion'}

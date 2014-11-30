@@ -1,0 +1,4 @@
+.thread-container{ng-if: 'canStartProposals()'}
+  .thread-start-proposal-card
+    %h3.first{translate: 'discussion.start_proposal_title'}
+    %a{translate: 'discussion.start_proposal', href: '#', ng_click: 'openForm()'}

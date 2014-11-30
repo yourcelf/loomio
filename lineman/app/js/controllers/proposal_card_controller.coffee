@@ -1,5 +1,10 @@
-angular.module('loomioApp').controller 'ProposalCardController', ($scope, $modal, UserAuthService) ->
+angular.module('loomioApp').controller 'ProposalCardController', ($scope, $modal, UserAuthService, ProposalService, FormService) ->
   currentUser = UserAuthService.currentUser
+
+  $scope.proposalCopy = $scope.proposal.copy()
+
+  $scope.inline = true
+  FormService.applyForm $scope, ProposalService.save, $scope.proposalCopy  
 
   filteredVotes = ->
     return [] unless $scope.proposal
@@ -28,4 +33,5 @@ angular.module('loomioApp').controller 'ProposalCardController', ($scope, $modal
     return false unless $scope.proposal
     $scope.proposal.lastVoteByUser(currentUser)
 
-
+  $scope.canEditProposal = ->
+    currentUser.canEditProposal $scope.proposal

@@ -1,27 +1,18 @@
-angular.module('loomioApp').controller 'DiscussionController', ($scope, $modal, discussion, MessageChannelService, EventService, FileUploadService, UserAuthService) ->
-  onMessageReceived = ->
-    console.log 'on message received called, yay'
-    $scope.$digest()
+angular.module('loomioApp').controller 'DiscussionController', ($scope, $modal, discussion, MessageChannelService, EventService, UserAuthService, DiscussionService, FormService) ->
 
-  MessageChannelService.subscribeTo("/discussion-#{discussion.id}", onMessageReceived)
-  #MessageChannelService.subscribeTo("/events", onMessageReceived)
+  MessageChannelService.subscribeTo("/discussion-#{discussion.id}", $scope.digest)
 
   $scope.discussion = discussion
   $scope.discussionCopy = discussion.copy()
+
+  $scope.inline = true
+  FormService.applyForm $scope, DiscussionService.save, $scope.discussionCopy
 
   $scope.wrap = {}
   nextPage = 1
 
   busy = false
   $scope.lastPage = false
-  $scope.editingInline = false
-
-  $scope.editInline = -> 
-    $scope.editingInline = true
-
-  $scope.$on 'editInlineComplete', -> 
-    $scope.editingInline = false
-    $scope.discussionCopy = $scope.discussion
 
   $scope.editDiscussion = ->
     modalInstance = $modal.open
@@ -45,9 +36,6 @@ angular.module('loomioApp').controller 'DiscussionController', ($scope, $modal, 
 
   $scope.$on 'replyToCommentClicked', (event, originalComment) ->
     $scope.$broadcast('showReplyToCommentForm', originalComment)
-
-  $scope.canStartProposals = ->
-    !discussion.activeProposal() and UserAuthService.currentUser.canStartProposals($scope.discussion)
 
   $scope.canEditDiscussion = ->
     UserAuthService.currentUser.canEditDiscussion($scope.discussion)

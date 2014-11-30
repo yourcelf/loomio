@@ -29,9 +29,9 @@ angular.module('loomioApp').factory 'FormService', (FlashService) ->
         method object, success, failure
 
       if modal?
-        scope.successCallback = ->
-          modal.dismiss 'success'
+        scope.successCallback = scope.cancel = modal.close
 
-        scope.cancel = ($event) ->
-          $event.preventDefault()
-          modal.close 'dismiss'
+      if scope.inline?
+        scope.edit        = -> scope.editing = true
+        scope.doneEditing = -> scope.editing = false
+        scope.successCallback = scope.stop

@@ -245,6 +245,9 @@ en:
     liked_by_name: 'Liked by {{name}}.'
     liked_by_names_and_name: 'Liked by {{joinedNames}} and {{name}}.'
     started_by: 'Started by <strong>{{name}}</strong>'
+    start_proposal_title: 'Ready to make a decision?'
+    start_proposal: 'Create a Proposal'
+    proposal: 'Proposal'
 
   delete_comment_dialog:
     title: 'Delete comment'

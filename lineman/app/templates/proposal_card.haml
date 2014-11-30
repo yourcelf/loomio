@@ -1,18 +1,25 @@
 .proposal-card{ng-show: 'proposal'}
   %proposal_card_dropdown{proposal: 'proposal'}
-  %h2 {{::proposal.name}}
-  .proposal-card-started-by
-    %span{translate: 'proposal_card.started_by', translate-values: '::{name: proposal.authorName()}'}
-    %span.time-ago>
-      {{discussion.createdAt | timeFromNowInWords}}
-    ·
-    / this should be time from now
-    %timeago{timestamp: 'proposal.closingAt' }>
-    / %span.time-ago>
-    /   {{proposal.closingAt | exactDateWithTime }}
-    .badge.pull-right{ng-show: 'proposal.closedAt'} Closed
-  .proposal-card-description{btf-markdown: 'proposal.description' }
+  %form{name: 'proposalForm', ng_submit: 'submit()'}
+    %h2{ng-if: '!editing'} {{proposal.name}}
+    %input.proposal-description-input.form-control{ng-if: 'editing', ng-model: 'proposalCopy.name', placeholder: "{{ 'proposal_form.name_placeholder' | translate }}"}
 
+    .proposal-card-started-by
+      %span{translate: 'proposal_card.started_by', translate-values: '::{name: proposal.authorName()}'}
+      %span.time-ago>
+        {{discussion.createdAt | timeFromNowInWords}}
+      ·
+      %timeago{timestamp: 'proposal.closingAt' }>
+      %span{ng-if: '!editing && canEditProposal()'}>
+        ·
+        %a{translate: 'common.action.edit', href: '#', ng-click: 'edit()'}
+      .badge.pull-right{ng-show: 'proposal.closedAt'} Closed
+    .proposal-card-description{ng-if: '!editing', btf-markdown: 'proposal.description' }
+    %textarea.proposal-description-input.form-control{ng-if: 'editing', ng-model: 'proposalCopy.description', placeholder: "{{ 'proposal_form.description_placeholder' | translate }}"}
+
+    .thread-discussion-inline-actions{ng-if: 'editing'}
+      %button.btn.btn-primary{type: 'submit', translate: 'proposal_form.edit_proposal' }
+      %button.btn.btn-warning{type: 'button', ng-click: 'doneEditing()', translate: 'common.action.cancel'}
 
   .pie-chart.media
     .pie-chart-pie.media-left
