@@ -18,8 +18,8 @@ class API::RestfulController < API::BaseController
       service.create({resource_symbol => resource,
                       actor: current_user})
       respond_with_resource
-    rescue
-      respond_with_error
+    rescue => error
+      respond_with_error error
     end
   end
 
@@ -30,8 +30,8 @@ class API::RestfulController < API::BaseController
                       params: resource_params,
                       actor: current_user})
       respond_with_resource
-    rescue
-      respond_with_error
+    rescue => error
+      respond_with_error error
     end
   end
 
@@ -41,8 +41,8 @@ class API::RestfulController < API::BaseController
       service.destroy({resource_symbol => resource,
                        actor: current_user})
       render json: {success: 'success'}
-    rescue
-      respond_with_error
+    rescue => error
+      respond_with_error error
     end
   end
 
@@ -121,12 +121,19 @@ class API::RestfulController < API::BaseController
     if resource.errors.empty?
       render json: [resource], root: serializer_root
     else
-      render json: resource.errors.full_messages, root: false, status: 400
+      render json: validation_errors, root: false, status: 422
     end
   end
 
-  def respond_with_error
-    render json: ['flash.errors.aw_crap'], root: false, status: 400
+  def respond_with_error(error)
+    render case error
+    when ActionController::UnpermittedParameters then { json: ['common.messages.unpermitted_params'], status: 400, root: false }
+    when CanCan::AccessDenied                    then { json: ['common.messages.access_denied'],      status: 403, root: false }
+    else                                              { json: ['common.messages.aw_crap'],            status: 500, root: false } end
+  end
+
+  def validation_errors
+    resource.errors.map { |key, value| { attribute: key, message: "#{key} #{value}".humanize } }
   end
 
   def serializer_root

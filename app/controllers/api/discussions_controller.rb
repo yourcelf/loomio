@@ -1,6 +1,5 @@
 class API::DiscussionsController < API::RestfulController
   load_and_authorize_resource only: :show, find_by: :key
-  load_resource only: [:create, :update]
 
   def inbox
     @discussions = GroupDiscussionsViewer.for(user: current_user)

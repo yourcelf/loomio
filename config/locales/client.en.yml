@@ -15,8 +15,9 @@ en:
       view_all: "View All"
       new_thread: "New thread"
       add_subgroup: 'Add subgroup'
-
     messages:
+      unpermitted_params: 'We detected something fishy with your submission. Please try again.'
+      access_denied: 'Sorry, but you do not have permission to do this.'
       aw_crap: 'We''re sorry, but something went wrong. Please try again'
 
   inbox:
@@ -30,7 +31,7 @@ en:
     sign_in: 'Login'
 
   comment_form:
-    flash_messages:
+    messages:
       update_comment: 'Changes saved'
       destroy_comment: 'You comment has been deleted' 
     edit_comment: 'Edit comment'

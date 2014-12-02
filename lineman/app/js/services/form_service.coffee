@@ -12,7 +12,7 @@ angular.module('loomioApp').factory 'FormService', (FlashService) ->
 
       failure = (errors) ->
         scope.isDisabled = false
-        FlashService.failure errors
+        FlashService.failure _.map(errors, (error) -> error.message)
         scope.onFailure() if scope.onFailure?
 
       scope.submit = ->
