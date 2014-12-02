@@ -67,20 +67,27 @@ describe API::DiscussionsController do
     context 'failures' do
       it "responds with an error when there are unpermitted params" do
         discussion_params[:dontmindme] = 'wild wooly byte virus'
-        expect { put :update, id: discussion.id, discussion: discussion_params, format: :json }.to raise_error ActionController::UnpermittedParameters
+        put :update, id: discussion.id, discussion: discussion_params, format: :json
+        json = JSON.parse(response.body)
+        expect(json[0]).to eq 'common.messages.unpermitted_params'
+        expect(response.status).to eq 400
       end
 
       it "responds with an error when the user is unauthorized" do
         sign_in another_user
-        expect { put :update, id: discussion.id, discussion: discussion_params, format: :json }.to raise_error CanCan::AccessDenied
+        put :update, id: discussion.id, discussion: discussion_params, format: :json
+        json = JSON.parse(response.body)
+        expect(json[0]).to eq 'common.messages.access_denied'
+        expect(response.status).to eq 403
       end
 
       it "responds with validation errors when they exist" do
         discussion_params[:title] = ''
         put :update, id: discussion.id, discussion: discussion_params, format: :json
         json = JSON.parse(response.body)
-        expect(response.status).to eq 400
-        expect(json['errors']['title']).to include 'can\'t be blank'
+        expect(response.status).to eq 422
+        expect(json[0]['attribute']).to eq 'title'
+        expect(json[0]['message']).to eq 'Title can\'t be blank'
       end
     end
   end
@@ -118,20 +125,27 @@ describe API::DiscussionsController do
     context 'failures' do
       it "responds with an error when there are unpermitted params" do
         discussion_params[:dontmindme] = 'wild wooly byte virus'
-        expect { post :create, discussion: discussion_params, format: :json }.to raise_error ActionController::UnpermittedParameters
+        post :create, discussion: discussion_params, format: :json
+        json = JSON.parse(response.body)
+        expect(json[0]).to eq 'common.messages.unpermitted_params'
+        expect(response.status).to eq 400
       end
 
       it "responds with an error when the user is unauthorized" do
         sign_in another_user
-        expect { post :create, discussion: discussion_params, format: :json }.to raise_error CanCan::AccessDenied
+        post :create, discussion: discussion_params, format: :json
+        json = JSON.parse(response.body)
+        expect(json[0]).to eq 'common.messages.access_denied'
+        expect(response.status).to eq 403
       end
 
       it "responds with validation errors when they exist" do
         discussion_params[:title] = ''
         post :create, discussion: discussion_params, format: :json
         json = JSON.parse(response.body)
-        expect(response.status).to eq 400
-        expect(json['errors']['title']).to include 'can\'t be blank'
+        expect(response.status).to eq 422
+        expect(json[0]['attribute']).to eq 'title'
+        expect(json[0]['message']).to eq 'Title can\'t be blank'
       end
     end
   end
