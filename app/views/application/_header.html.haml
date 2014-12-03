@@ -1,3 +1,5 @@
+- logo_path = ENV['APP_LOGO_PATH'] || image_url("navbar-logo-beta.jpg")
+
 %nav.navbar.navbar-default.navbar-fixed-top
   .container
     .navbar-header
@@ -8,7 +10,7 @@
           %span.icon-bar
           %span.icon-bar
 
-        %a.navbar-brand.app-logo{ href: dashboard_or_root_path, title: t(:"organisation.name"), style: "background-image: url(#{ENV['APP_LOGO_PATH']})" }
+        %a.navbar-brand.app-logo{ href: dashboard_or_root_path, title: t(:"organisation.name"), style: "background-image: url(#{logo_path})" }
 
         %ul.nav.navbar-nav
           %li#inbox-container
