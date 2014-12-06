@@ -119,18 +119,6 @@ module ApplicationHelper
     Redcarpet::Render::SmartyPants.render(output).html_safe
   end
 
-  def show_contribution_icon?
-    current_user && !current_user.belongs_to_manual_subscription_group?
-  end
-
-  def can_ask_for_contribution?(group)
-    !group.has_manual_subscription? || !group.is_paying?
-  end
-
-  def hide_crowdfunding_banner?
-    session[:hide_banner] == true
-  end
-
   def visitor?
     !user_signed_in?
   end
@@ -141,10 +129,6 @@ module ApplicationHelper
         yield
       end
     end
-  end
-
-  def navbar_contribute
-    ENV["NAVBAR_CONTRIBUTE"] or "show"
   end
 
   def toggle_unread_path
