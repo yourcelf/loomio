@@ -2,9 +2,10 @@ class SearchResult
   include ActiveModel::Serialization
 
   attr_accessor :discussion, :motion
-  def initialize(obj, priority)
+  def initialize(obj, query, priority)
     set_result_for(obj)
     @priority = priority
+    @query = query
   end
 
   def read_attribute_for_serialization(field)
@@ -13,6 +14,7 @@ class SearchResult
 
   def attributes
     {
+      query: @query,
       discussion: @discussion,
       motion: @motion,
       priority: @priority

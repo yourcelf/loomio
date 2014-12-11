@@ -1,7 +1,7 @@
 class Queries::VisibleSearchResults < Delegator
   def initialize(user: nil, query: '')
     @user, @query, @results = user, query, []
-    @results = all_results.each_with_index.map { |result, index| SearchResult.new(result, index) }
+    @results = sorted_results.each_with_index.map { |result, index| SearchResult.new(result, query, index) }
     super @results
   end
 
@@ -15,7 +15,7 @@ class Queries::VisibleSearchResults < Delegator
 
   private
 
-  def all_results
+  def sorted_results # these aren't actually sorted yet
     @user.discussions.search(@query) + @user.motions.search(@query)
   end
 
