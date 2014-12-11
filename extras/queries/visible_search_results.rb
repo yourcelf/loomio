@@ -1,7 +1,7 @@
 class Queries::VisibleSearchResults < Delegator
   def initialize(user: nil, query: '')
-    @results = user.discussions.search(query) + user.motions.search(query).map(&:discussion)
-
+    @user, @query, @results = user, query, []
+    @results = all_results.each_with_index.map { |result, index| SearchResult.new(result, index) }
     super @results
   end
 
@@ -11,6 +11,12 @@ class Queries::VisibleSearchResults < Delegator
 
   def __setobj__(obj)
     @relation = obj
+  end
+
+  private
+
+  def all_results
+    @user.discussions.search(@query) + @user.motions.search(@query)
   end
 
 end
