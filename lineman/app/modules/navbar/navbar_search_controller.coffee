@@ -5,7 +5,7 @@ angular.module('loomioApp').controller 'NavbarSearchController', ($scope, UserAu
 
   $scope.getSearchResults = ->
     if $scope.query?
-      Records.searchResults.fetchByFragment $scope.query
+      Records.search_results.fetchByFragment $scope.query
 
   $scope.searchResults = ->
-    Records.searchResults.findByFragment $scope.query
+    Records.search_results.findByFragment $scope.query

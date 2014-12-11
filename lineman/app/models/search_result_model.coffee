@@ -1,7 +1,7 @@
 angular.module('loomioApp').factory 'SearchResultModel', (BaseModel) ->
   class SearchResultModel extends BaseModel
-    @singular: 'searchResult'
-    @plural: 'searchResults'
+    @singular: 'search_result'
+    @plural: 'search_results'
 
     initialize: (data) ->
       @query = data.query
